@@ -138,7 +138,7 @@ module.exports = {
         apis: [
           {
             endpoint: process.env.MICROCMS_ENDPOINT,
-            format: "object",
+            format: "list",
           },
         ],
       },

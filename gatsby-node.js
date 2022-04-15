@@ -11,14 +11,18 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const result = await graphql(
     `
       {
-        allMarkdownRemark(
-          sort: { fields: [frontmatter___date], order: ASC }
-          limit: 1000
-        ) {
-          nodes {
-            id
-            fields {
-              slug
+        allMicrocmsBlog(sort: { fields: [createdAt], order: DESC }) {
+          edges {
+            node {
+              id
+              blogId
+              createdAt
+            }
+            previous {
+              id
+            }
+            next {
+              id
             }
           }
         }
@@ -34,19 +38,31 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return
   }
 
-  const posts = result.data.allMarkdownRemark.nodes
+  const edges = result.data.allMicrocmsBlog.edges
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
   // `context` is available in the template as a prop and as a variable in GraphQL
 
-  if (posts.length > 0) {
-    posts.forEach((post, index) => {
-      const previousPostId = index === 0 ? null : posts[index - 1].id
-      const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
-
+  if (edges.length > 0) {
+    edges.forEach(({ node: post, previous, next }, index) => {
+      // const previousPostId = index === 0 ? null : edges[index - 1].id
+      const previousPostId = previous ? previous.id : null
+      // const nextPostId =
+      //   index === edges.length - 1 ? null : edges[index + 1].id
+      const nextPostId = next ? next.id : null
+      console.log("👺")
+      console.log({
+        path: post.id,
+        component: blogPost,
+        context: {
+          id: post.id,
+          previousPostId,
+          nextPostId,
+        },
+      })
       createPage({
-        path: post.fields.slug,
+        path: post.blogId,
         component: blogPost,
         context: {
           id: post.id,
@@ -58,19 +74,19 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 }
 
-exports.onCreateNode = ({ node, actions, getNode }) => {
-  const { createNodeField } = actions
+// exports.onCreateNode = ({ node, actions, getNode }) => {
+//   const { createNodeField } = actions
 
-  if (node.internal.type === `MarkdownRemark`) {
-    const value = createFilePath({ node, getNode })
+//   if (node.internal.type === `MicrocmsBlog`) {
+//     const value = node.contents.id
 
-    createNodeField({
-      name: `slug`,
-      node,
-      value,
-    })
-  }
-}
+//     createNodeField({
+//       name: `slug`,
+//       node,
+//       value,
+//     })
+//   }
+// }
 
 exports.createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions
@@ -95,21 +111,6 @@ exports.createSchemaCustomization = ({ actions }) => {
 
     type Social {
       twitter: String
-    }
-
-    type MarkdownRemark implements Node {
-      frontmatter: Frontmatter
-      fields: Fields
-    }
-
-    type Frontmatter {
-      title: String
-      description: String
-      date: Date @dateformat
-    }
-
-    type Fields {
-      slug: String
     }
   `)
 }
