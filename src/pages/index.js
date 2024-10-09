@@ -7,7 +7,7 @@ import Seo from "../components/seo"
 
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMicrocmsBlog.nodes
+  const posts = data.allMicrocmsHelpdev.nodes
 
   if (posts.length === 0) {
     return (
@@ -32,7 +32,7 @@ const BlogIndex = ({ data, location }) => {
           const title = post.title || "Title"
 
           return (
-            <li key={post.blogId}>
+            <li key={post.helpdevId}>
               <article
                 className="post-list-item"
                 itemScope
@@ -40,7 +40,7 @@ const BlogIndex = ({ data, location }) => {
               >
                 <header>
                   <h2>
-                    <Link to={post.blogId} itemProp="url">
+                    <Link to={post.helpdevId} itemProp="url">
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>
@@ -49,7 +49,7 @@ const BlogIndex = ({ data, location }) => {
                 <section>
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: post.description || "default body",
+                      __html: post.description || "概要欄",
                     }}
                     itemProp="description"
                   />
@@ -72,11 +72,11 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMicrocmsBlog(sort: { fields: [createdAt], order: DESC }) {
+    allMicrocmsHelpdev(sort: { fields: [createdAt], order: DESC }) {
       nodes {
-        blogId
+        helpdevId
         title
-        description
+        content
         createdAt
       }
     }

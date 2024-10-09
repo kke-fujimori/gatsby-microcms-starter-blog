@@ -5,9 +5,10 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 
+
 const BlogPostTemplate = ({ data, location }) => {
   console.log(data)
-  const post = data.microcmsBlog
+  const post = data.microcmsHelpdev
   const siteTitle = data.site.siteMetadata?.title || `Title`
   const { previous, next } = data
 
@@ -15,7 +16,7 @@ const BlogPostTemplate = ({ data, location }) => {
     <Layout location={location} title={siteTitle}>
       <Seo
         title={post.title}
-        description={post.description || "default description"}
+        description={post.title || "default description"}
       />
       <article
         className="blog-post"
@@ -27,7 +28,7 @@ const BlogPostTemplate = ({ data, location }) => {
           <p>{post.createdAt}</p>
         </header>
         <section
-          dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+          dangerouslySetInnerHTML={{ __html: post.content }}
           itemProp="articleBody"
         />
         <hr />
@@ -78,17 +79,17 @@ export const pageQuery = graphql`
         title
       }
     }
-    microcmsBlog(id: { eq: $id }) {
+    microcmsHelpdev(id: { eq: $id }) {
       id
       title
-      bodyHtml
+      content
       createdAt
     }
-    previous: microcmsBlog(id: { eq: $previousPostId }) {
+    previous: microcmsHelpdev(id: { eq: $previousPostId }) {
       id
       title
     }
-    next: microcmsBlog(id: { eq: $nextPostId }) {
+    next: microcmsHelpdev(id: { eq: $nextPostId }) {
       id
       title
     }

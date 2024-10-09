@@ -11,11 +11,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const result = await graphql(
     `
       {
-        allMicrocmsBlog(sort: { fields: [createdAt], order: DESC }) {
+        allMicrocmsHelpdev(sort: { fields: [createdAt], order: DESC }) {
           edges {
             node {
               id
-              blogId
+              helpdevId
               createdAt
             }
             previous {
@@ -38,7 +38,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return
   }
 
-  const edges = result.data.allMicrocmsBlog.edges
+  const edges = result.data.allMicrocmsHelpdev.edges
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
@@ -52,7 +52,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       //   index === edges.length - 1 ? null : edges[index + 1].id
       const nextPostId = next ? next.id : null
       createPage({
-        path: post.blogId,
+        path: post.helpdevId,
         component: blogPost,
         context: {
           id: post.id,

@@ -1,7 +1,9 @@
-require("dotenv").config()
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`
+})
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `タイトルはGatsby Starter Blog`,
     author: {
       name: `Kyle Mathews`,
       summary: `who lives and works in San Francisco building useful things.`,
@@ -137,10 +139,14 @@ module.exports = {
         serviceId: process.env.MICROCMS_SERVICE_ID,
         apis: [
           {
-            endpoint: process.env.MICROCMS_ENDPOINT,
-            format: "list",
+            endpoint: 'helpdev',
+            format: 'list',
           },
-        ],
+          {
+            endpoint: 'categories',
+            format: 'list',
+          },
+        ]
       },
     },
   ],
